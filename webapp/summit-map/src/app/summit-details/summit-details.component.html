@@ -1,0 +1,47 @@
+<div class="form-container">
+  <form [formGroup]="summitForm" class="summit-form">
+    <mat-form-field>
+      <input formControlName="name" matInput placeholder="Name" type="text">
+      <mat-error *ngIf="summitForm.get('name').invalid">Error</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="date" matInput [matDatepicker]="summitDatePicker" placeholder="Climb date">
+      <mat-datepicker-toggle matSuffix [for]="summitDatePicker"></mat-datepicker-toggle>
+      <mat-datepicker #summitDatePicker></mat-datepicker>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="latitude" matInput placeholder="Latitude" type="number">
+      <mat-error *ngIf="summitForm.get('latitude').invalid">Error</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="longitude" matInput placeholder="Longitude" type="number">
+      <mat-error *ngIf="summitForm.get('longitude').invalid">Error</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="elevation" matInput placeholder="Elevation" type="number">
+      <mat-error *ngIf="summitForm.get('elevation').invalid">Error</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="gain" matInput placeholder="Gain" type="number">
+      <mat-error *ngIf="summitForm.get('gain').invalid">Error</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="photoUrl" matInput placeholder="Google Photo Url" type="text">
+      <mat-error *ngIf="summitForm.get('photoUrl').invalid">Error</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+      <input formControlName="description" matInput placeholder="Description" type="text">
+      <mat-error *ngIf="summitForm.get('description').invalid">Error</mat-error>
+    </mat-form-field>
+  </form>
+
+  <button mat-button [disabled]="summitForm.invalid" (click)="saveSummit()">Save</button>
+  <button mat-button (click)="delete()">Delete</button>
+</div>

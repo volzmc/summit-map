@@ -2,7 +2,7 @@ export class Summit {
     latitude: number;
     longitude: number;
     title: string;
-    photoUrl: string;
+    photoAlbumName: string;
     elevation: number;
     totalGain: number;
     dateClimbed: Date;

@@ -1,14 +1,21 @@
-<mat-list>
-  <mat-list-item>
-    <sm-display-pair key="Name" [value]="data.title" isTitle="true"></sm-display-pair>
-  </mat-list-item>
-  <mat-list-item>
-    <sm-display-pair key="Highest Point" [value]="data.elevation + ' ft'"></sm-display-pair>
-  </mat-list-item>
-  <mat-list-item>
-    <sm-display-pair key="Gain" [value]="data.totalGain + ' ft'"></sm-display-pair>
-  </mat-list-item>
-  <mat-list-item>
-    <sm-display-pair key="Date Climbed" [value]="data.dateClimbed | date"></sm-display-pair>
-  </mat-list-item>
-</mat-list>
+<div class="main-container">
+  <div (click)="openPhotoAlbum()">
+    <img src="{{getCoverPhotoUrl()}}" height="300px" width="300px">
+  </div>
+
+  <mat-list>
+    <mat-list-item>
+      <sm-display-pair key="Name" [value]="data.title" isTitle="true"></sm-display-pair>
+    </mat-list-item>
+    <mat-list-item>
+      <sm-display-pair key="Highest Point" [value]="data.elevation + ' ft'"></sm-display-pair>
+    </mat-list-item>
+    <mat-list-item>
+      <sm-display-pair key="Gain" [value]="data.totalGain + ' ft'"></sm-display-pair>
+    </mat-list-item>
+    <mat-list-item>
+      <sm-display-pair key="Date Climbed" [value]="data.dateClimbed | date"></sm-display-pair>
+    </mat-list-item>
+  </mat-list>
+
+</div>

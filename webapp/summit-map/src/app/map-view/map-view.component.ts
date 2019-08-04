@@ -5,6 +5,7 @@ import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-shee
 import { ApiService } from '../services/api.service';
 import { Summit } from '../models/summit';
 import { SummitSliderComponent } from '../summit-slider/summit-slider.component';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'sm-map-view',
@@ -26,9 +27,11 @@ export class MapViewComponent implements OnInit {
   ngOnInit() {
     this.initMap();
 
-    this.apiService.getAllSummits()
-      .subscribe(summits => {
-        this.allSummits = summits;
+    forkJoin(this.apiService.getAllSummits(), this.apiService.getAllAlbums()).subscribe(tuple => {
+      const summits = tuple[0];
+      const albums = tuple[1];
+
+      this.allSummits = summits;
         summits.forEach(sum => {
           const marker = new google.maps.Marker({
             position: new google.maps.LatLng(sum.latitude, sum.longitude),
@@ -40,6 +43,14 @@ export class MapViewComponent implements OnInit {
             this.handleMarkerClicked(marker);
           });
         });
+
+      albums.forEach(album => {
+        const smt = this.allSummits.find(s => s.photoAlbumName === album.title);
+        if (smt) {
+          smt.photoAlbumId = album.id;
+          smt.album = album;
+        }
+      });
     });
   }
 

@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   maps_api_key: 'AIzaSyAEljaAT_5TW2vZKqA9s9_XyQ_fmiZgEKo',
-  apiBase: 'http://localhost:3000/api'
+  apiBase: 'http://localhost:8080/api'
 };
 
 /*

@@ -58,11 +58,8 @@ app.get('/auth/google', passport.authenticate('google', {
 app.get(
     '/auth/google/callback',
     passport.authenticate(
-        'google', { failureRedirect: '/', failureFlash: true, session: true }),
-    (req, res) => {
-        // User has logged in.
-        res.redirect('/');
-});
+        'google', { failureRedirect: '/', successRedirect: '/', failureFlash: true, session: true }),
+    );
 
 
 app.use((req: Request, res: Response, next) => {

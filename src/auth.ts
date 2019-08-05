@@ -11,9 +11,8 @@ export const setAuth = (passport: PassportStatic) => {
             clientID: config.oAuthClientId,
             clientSecret: config.oAuthClientSecret,
             callbackURL: config.oAuthCallbackUrl,
-            userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
-            passReqToCallback: true
+            userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo'
         },
-        (token, accessToken, refreshToken, profile, done) => done(null, { profile, token })
+        (token, refreshToken, profile, done) => done(null, { profile, token })
     ))
 };

@@ -64,11 +64,6 @@ app.get(
         res.redirect('/');
 });
 
-app.use((req: Request, res: Response, next) => {
-    if (!req.user || !req.user.token) {
-        // res.redirect('/login');
-    }
-})
 
 app.use((req: Request, res: Response, next) => {
     res.locals.name = '-';
@@ -119,6 +114,7 @@ app.get("/api/albums", async (req: Request, res: Response) => {
 })
 
 app.get("*", (req: Request, res: Response) => {
+    console.log(`fetching ${req.url}`);
     if (allowedExt.filter((ext) => req.url.indexOf(ext) > 0).length > 0) {
         res.sendFile(path.resolve(`./webapp/summit-map/dist/summit-map/${req.url}`));
     } else {

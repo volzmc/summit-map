@@ -13,6 +13,8 @@ export class PhotoAlbumComponent implements OnInit {
 
   images: MediaItem[];
 
+  private innerScreenWidth: number;
+
   constructor(
     private apiService: ApiService,
     @Inject(MAT_DIALOG_DATA) private data: Summit
@@ -23,6 +25,8 @@ export class PhotoAlbumComponent implements OnInit {
       .subscribe(items => {
         this.images = items.filter(i => i.filename.endsWith('.jpg') && i.mediaMetadata.width < 5000);
       });
+
+    this.innerScreenWidth = window.innerWidth;
   }
 
   getImageSource(index: number): string {
@@ -33,7 +37,16 @@ export class PhotoAlbumComponent implements OnInit {
       height = width;
       width = temp;
     }
-    return `${this.images[index].baseUrl}=w${width / 4}-h${height / 4}`;
+    return `${this.images[index].baseUrl}=w${this.getWidth()}-h${this.getHeight(width, height)}`;
+  }
+
+  private getWidth(): number {
+    return Math.round(this.innerScreenWidth * 0.8);
+  }
+
+  private getHeight(imageWidth: number, imageHeight): number {
+    const widthRatio = this.getWidth() / imageWidth;
+    return Math.round(imageHeight * widthRatio);
   }
 
 }

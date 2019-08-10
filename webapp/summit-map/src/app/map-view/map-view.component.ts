@@ -36,7 +36,8 @@ export class MapViewComponent implements OnInit {
           const marker = new google.maps.Marker({
             position: new google.maps.LatLng(sum.latitude, sum.longitude),
             map: this.map,
-            title: sum.title
+            title: sum.title,
+            icon: this.getIcon(sum)
           });
 
           marker.addListener('click', () => {
@@ -73,6 +74,16 @@ export class MapViewComponent implements OnInit {
     this.bottomSheetService.open(SummitSliderComponent, {
       data: summit
     });
+  }
+
+  private getIcon(summit: Summit): any {
+    return summit.bulgersNumber ?
+      {
+        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
+      } :
+      {
+        url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
+      };
   }
 
 }

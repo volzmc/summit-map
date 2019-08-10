@@ -30,6 +30,16 @@ export class ApiService {
     );
   }
 
+  public getMediaItem(id: string): Observable<MediaItem> {
+    return this.makeRequest(
+      'POST',
+      'mediaItem',
+      {
+        mediaItemId: id
+      },
+    );
+  }
+
   public addOrUpdateSummit(summit: Summit) {
     return this.makeRequest(
       'POST',

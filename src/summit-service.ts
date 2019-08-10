@@ -1,47 +1,44 @@
-import * as fs from "fs";
-import path from "path";
+import { createHandyClient, IHandyRedis } from "handy-redis";
 
 import { Summit } from './models';
+import { config } from "./config";
 
 export class SummitService {
-    private allSummits: Summit[];
-    private summitFilePath = path.resolve("./assets/summits.json");
+    private redisClient: IHandyRedis;
 
     constructor() {
-        const rawFile = fs.readFileSync(this.summitFilePath);
-        const parsed = JSON.parse(rawFile.toString());
-        this.allSummits = parsed["summits"];
+        this.redisClient = createHandyClient(process.env.REDIS_URL || config.redisUrl);
     }
 
-    getAllSummits(): Summit[] {
-        return this.allSummits;
+    async getAllSummits(): Promise<Summit[]> {
+        const allIds = await this.redisClient.smembers('summits');
+        const multi = this.redisClient.multi();
+        allIds.forEach(id => {
+            multi.get(id);
+        });
+        return this.redisClient.execMulti<string>(multi).then(
+            rawVals => rawVals.map(v => JSON.parse(v))
+        );
     }
 
-    addOrUpdateSummit(summit: Summit): void {
-        const existingIndex = this.allSummits.findIndex(s => s.title === summit.title);
-        if (existingIndex >= 0) {
-            this.allSummits[existingIndex] = summit;
-        } else {
-            this.allSummits.push(summit);
+    async addOrUpdateSummit(summit: Summit): Promise<any> {
+        const summitExists = await this.redisClient.sismember('summits', summit.title);
+
+        if (summitExists) {
+            await this.redisClient.srem('summits', summit.title);
+            await this.redisClient.del(summit.title);
         }
 
-        this.saveList();
+        await this.redisClient.sadd('summits', summit.title);
+        return this.redisClient.set(summit.title, JSON.stringify(summit));
     }
 
-    removeSummit(summit: Summit): void {
-        const existingIndex = this.allSummits.findIndex(s => s.title === summit.title);
-        if (existingIndex >= 0) {
-            this.allSummits.splice(existingIndex, 1);
+    async removeSummit(summit: Summit): Promise<any> {
+        const summitExists = await this.redisClient.sismember('summits', summit.title);
+
+        if (summitExists) {
+            await this.redisClient.srem('summits', summit.title);
+            await this.redisClient.del(summit.title);
         }
-
-        this.saveList();
-    }
-
-    private saveList(): void {
-        const formattedJson = {
-            "summits": this.allSummits
-        };
-        const raw = JSON.stringify(formattedJson);
-        fs.writeFileSync(this.summitFilePath, raw);
     }
 }

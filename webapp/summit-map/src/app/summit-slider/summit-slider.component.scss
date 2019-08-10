@@ -1,4 +1,13 @@
 .main-container {
     display: flex;
     align-items: center;
+
+    .photo-container:hover {
+        cursor: pointer;
+    }
+}
+
+.spinner {
+    margin-left: auto;
+    margin-right: auto;
 }

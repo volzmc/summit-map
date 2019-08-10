@@ -32,6 +32,11 @@
     </mat-form-field>
 
     <mat-form-field>
+      <input formControlName="bulgersNumber" matInput placeholder="Bulgers Number" type="number">
+      <mat-error *ngIf="summitForm.get('bulgersNumber').invalid">Error</mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
       <input formControlName="photoUrl" matInput placeholder="Google Photo Album Name" type="text">
       <mat-error *ngIf="summitForm.get('photoUrl').invalid">Error</mat-error>
     </mat-form-field>

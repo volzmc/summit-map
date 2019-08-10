@@ -31,6 +31,7 @@ export class SummitDetailsComponent implements OnInit {
       longitude: new FormControl(this.summit.longitude, [Validators.required]),
       elevation: new FormControl(this.summit.elevation, [Validators.required]),
       gain: new FormControl(this.summit.totalGain),
+      bulgersNumber: new FormControl(this.summit.bulgersNumber),
       photoUrl: new FormControl(this.summit.photoAlbumName),
       date: new FormControl(this.summit.dateClimbed, [Validators.required]),
       description: new FormControl(this.summit.description)
@@ -44,6 +45,7 @@ export class SummitDetailsComponent implements OnInit {
       longitude: this.summitForm.get('longitude').value,
       elevation: this.summitForm.get('elevation').value,
       totalGain: this.summitForm.get('gain').value,
+      bulgersNumber: this.summitForm.get('bulgersNumber').value,
       photoAlbumName: this.summitForm.get('photoUrl').value,
       dateClimbed: this.summitForm.get('date').value,
       description: this.summitForm.get('description').value

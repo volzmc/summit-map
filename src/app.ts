@@ -5,7 +5,7 @@ import path from "path";
 import bodyParser from "body-parser";
 import passport from "passport";
 import request from "request-promise";
-import google from "googleapis";
+import redis from "redis";
 
 import { SummitService } from "./summit-service";
 import { setAuth } from './auth';
@@ -13,6 +13,7 @@ import { config } from './config';
 
 const app = express();
 const port = process.env.PORT || 8080;
+const summitService = new SummitService();
 
 const allowedExt = [
     ".js",
@@ -73,22 +74,19 @@ app.use((req: Request, res: Response, next) => {
     next();
 });
 
-app.get("/api/allSummits", (req: Request, res: Response) => {
-    const allSummits = new SummitService()
-        .getAllSummits();
+app.get("/api/allSummits", async (req: Request, res: Response) => {
+    const allSummits = await summitService.getAllSummits();
 
     res.json(allSummits);
 });
 
-app.post("/api/update", (req: Request, res: Response) => {
-    const summitService = new SummitService();
-    summitService.addOrUpdateSummit(req.body);
+app.post("/api/update", async (req: Request, res: Response) => {
+    await summitService.addOrUpdateSummit(req.body);
     res.end();
 });
 
-app.post("/api/remove", (req: Request, res: Response) => {
-    const summitService = new SummitService();
-    summitService.removeSummit(req.body);
+app.post("/api/remove", async (req: Request, res: Response) => {
+    await summitService.removeSummit(req.body);
     res.end();
 });
 
@@ -101,6 +99,12 @@ app.post("/api/photos", async (req: Request, res: Response) => {
     } else {
         res.status(200).send(data.photos);
     }
+});
+
+app.post("/api/mediaItem", async (req: Request, res: Response) => {
+    const mediaItemId = req.body.mediaItemId;
+    const data = await getMediaItem(req.user.token, mediaItemId);
+    res.status(200).send(data);
 })
 
 app.get("/api/albums", async (req: Request, res: Response) => {
@@ -167,6 +171,16 @@ async function getPhotosFromAlbum(authToken: string, albumId: string) {
     }
 
     return { photos, error };
+}
+
+async function getMediaItem(authToken: string, mediaItemId: string) {
+    const result = await request.get(config.apiEndpoint + `/v1/mediaItems/${mediaItemId}`, {
+        headers: { 'Content-Type': 'application/json' },
+        json: true,
+        auth: { 'bearer': authToken }
+    });
+
+    return result;
 }
 
 // Returns a list of all albums owner by the logged in user from the Library

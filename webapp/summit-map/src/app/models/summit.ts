@@ -9,6 +9,7 @@ export class Summit {
     totalGain: number;
     dateClimbed: Date;
     description: string;
+    bulgersNumber: number;
 
     // Calculated
     photoAlbumId: string;

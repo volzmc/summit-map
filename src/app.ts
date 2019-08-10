@@ -5,7 +5,6 @@ import path from "path";
 import bodyParser from "body-parser";
 import passport from "passport";
 import request from "request-promise";
-import redis from "redis";
 
 import { SummitService } from "./summit-service";
 import { setAuth } from './auth';

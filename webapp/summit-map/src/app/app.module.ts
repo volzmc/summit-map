@@ -14,7 +14,6 @@ import { MapViewComponent } from './map-view/map-view.component';
 import { SummitDetailsComponent } from './summit-details/summit-details.component';
 import { SummitSliderComponent } from './summit-slider/summit-slider.component';
 import { DisplayPairComponent } from './shared/display-pair/display-pair.component';
-import { LoginComponent } from './login/login.component';
 import { PhotoAlbumComponent } from './photo-album/photo-album.component';
 
 @NgModule({
@@ -25,7 +24,6 @@ import { PhotoAlbumComponent } from './photo-album/photo-album.component';
     SummitDetailsComponent,
     SummitSliderComponent,
     DisplayPairComponent,
-    LoginComponent,
     PhotoAlbumComponent
   ],
   imports: [

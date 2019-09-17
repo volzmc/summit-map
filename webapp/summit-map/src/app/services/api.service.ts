@@ -16,12 +16,6 @@ export class ApiService {
     private http: HttpClient
   ) { }
 
-  public auth() {
-    const urlParts = environment.apiBase.split('/');
-    urlParts.splice(urlParts.length - 1);
-    return this.http.request<any>('GET', `${urlParts.join('/')}/auth/google`);
-  }
-
   public getAllSummits(): Observable<Summit[]> {
     return this.makeRequest(
       'GET',

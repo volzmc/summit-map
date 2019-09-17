@@ -22,13 +22,16 @@ export class SummitSliderComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.coverPhotoUrl = this.apiService.getMediaItem(this.data.album.coverPhotoMediaItemId)
-      .pipe(
-        map(mediaItem => {
-          const width = mediaItem.mediaMetadata.width;
-          const height = mediaItem.mediaMetadata.height;
-          return `${this.data.album.coverPhotoBaseUrl}=w${Math.round(width / 8)}-h${Math.round(height / 8)}`;
-        }));
+    if (this.data.album) {
+      this.isLoading = true;
+      this.coverPhotoUrl = this.apiService.getMediaItem(this.data.album.coverPhotoMediaItemId)
+        .pipe(
+          map(mediaItem => {
+            const width = mediaItem.mediaMetadata.width;
+            const height = mediaItem.mediaMetadata.height;
+            return `${this.data.album.coverPhotoBaseUrl}=w${Math.round(width / 8)}-h${Math.round(height / 8)}`;
+          }));
+    }
   }
 
   openPhotoAlbum() {

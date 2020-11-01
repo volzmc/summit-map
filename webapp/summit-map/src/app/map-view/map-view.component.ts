@@ -47,7 +47,7 @@ export class MapViewComponent implements OnInit {
         });
 
       albums.forEach(album => {
-        this.allSummits.every(s => {
+        this.allSummits.forEach(s => {
           if (s.photoAlbumName === album.title) {
             s.photoAlbumId = album.id;
             s.album = album;

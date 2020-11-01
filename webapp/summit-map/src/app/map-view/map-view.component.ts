@@ -40,17 +40,19 @@ export class MapViewComponent implements OnInit {
             icon: this.getIcon(sum)
           });
 
-          marker.addListener('click', () => {
+          marker.addListener('click touchstart', e => {
+            e.preventDefault();
             this.handleMarkerClicked(marker);
           });
         });
 
       albums.forEach(album => {
-        const smt = this.allSummits.find(s => s.photoAlbumName === album.title);
-        if (smt) {
-          smt.photoAlbumId = album.id;
-          smt.album = album;
-        }
+        this.allSummits.every(s => {
+          if (s.photoAlbumName === album.title) {
+            s.photoAlbumId = album.id;
+            s.album = album;
+          }
+        })
       });
     });
   }

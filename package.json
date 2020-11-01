@@ -12,7 +12,7 @@
     "postinstall": "cd webapp/summit-map && npm install && npm run build"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": "12.x"
   },
   "author": "Matt Volz",
   "license": "ISC",

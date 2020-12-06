@@ -40,7 +40,7 @@ export class MapViewComponent implements OnInit {
             icon: this.getIcon(sum)
           });
 
-          marker.addListener('mousedown', () => {
+          marker.addListener('click', () => {
             this.handleMarkerClicked(marker);
           });
         });

@@ -40,9 +40,9 @@ export class MapViewComponent implements OnInit {
             icon: this.getIcon(sum)
           });
 
-          marker.addListener('click', () => {
+          google.maps.event.addListener(marker, 'click', () => {
             this.handleMarkerClicked(marker);
-          });
+          })
         });
 
       albums.forEach(album => {

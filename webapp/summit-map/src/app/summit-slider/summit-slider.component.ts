@@ -24,6 +24,8 @@ export class SummitSliderComponent implements OnInit {
   ngOnInit() {
     if (this.data.album) {
       this.isLoading = true;
+      console.log("Loading bottom sheet")
+      /*
       this.coverPhotoUrl = this.apiService.getMediaItem(this.data.album.coverPhotoMediaItemId)
         .pipe(
           map(mediaItem => {
@@ -31,6 +33,7 @@ export class SummitSliderComponent implements OnInit {
             const height = mediaItem.mediaMetadata.height;
             return `${this.data.album.coverPhotoBaseUrl}=w${Math.round(width / 8)}-h${Math.round(height / 8)}`;
           }));
+          */
     }
   }
 

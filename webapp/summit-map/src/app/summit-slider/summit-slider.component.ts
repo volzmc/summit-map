@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA, MatDialog } from '@angular/material';
+import { MAT_BOTTOM_SHEET_DATA, MatDialog, MatBottomSheetRef } from '@angular/material';
 import { Summit } from '../models/summit';
 import { PhotoAlbumComponent } from '../photo-album/photo-album.component';
 import { ApiService } from '../services/api.service';
@@ -18,14 +18,15 @@ export class SummitSliderComponent implements OnInit {
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: Summit,
     private modalService: MatDialog,
-    private apiService: ApiService
+    private apiService: ApiService,
+    private bottomSheetRef: MatBottomSheetRef
   ) { }
 
   ngOnInit() {
     if (this.data.album) {
       this.isLoading = true;
       console.log("Loading bottom sheet")
-      /*
+      
       this.coverPhotoUrl = this.apiService.getMediaItem(this.data.album.coverPhotoMediaItemId)
         .pipe(
           map(mediaItem => {
@@ -33,8 +34,12 @@ export class SummitSliderComponent implements OnInit {
             const height = mediaItem.mediaMetadata.height;
             return `${this.data.album.coverPhotoBaseUrl}=w${Math.round(width / 8)}-h${Math.round(height / 8)}`;
           }));
-          */
+          
     }
+  }
+
+  dismissSheet() {
+    this.bottomSheetRef.dismiss();
   }
 
   openPhotoAlbum() {
@@ -42,6 +47,7 @@ export class SummitSliderComponent implements OnInit {
       data: this.data,
       backdropClass: 'photo-album-backdrop'
     });
+    this.dismissSheet();
   }
 
 }

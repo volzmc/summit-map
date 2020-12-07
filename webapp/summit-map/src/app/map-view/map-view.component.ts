@@ -76,7 +76,8 @@ export class MapViewComponent implements OnInit {
 
     console.info("Found matching summit" + summit.title);
     this.bottomSheetService.open(SummitSliderComponent, {
-      data: summit
+      data: summit,
+      disableClose: true
     });
   }
 

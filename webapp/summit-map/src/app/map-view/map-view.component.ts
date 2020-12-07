@@ -40,9 +40,10 @@ export class MapViewComponent implements OnInit {
             icon: this.getIcon(sum)
           });
 
-          google.maps.event.addListener(marker, 'click', () => {
+          marker.addListener('click', () => {
+            console.info("Click registered on marker");
             this.handleMarkerClicked(marker);
-          })
+          });
         });
 
       albums.forEach(album => {
@@ -70,8 +71,10 @@ export class MapViewComponent implements OnInit {
   }
 
   handleMarkerClicked(marker: google.maps.Marker): void {
+    console.info("Handling click");
     const summit = this.allSummits.find(s => s.title === marker.getTitle());
 
+    console.info("Found matching summit" + summit.title);
     this.bottomSheetService.open(SummitSliderComponent, {
       data: summit
     });

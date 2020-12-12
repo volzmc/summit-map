@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material';
@@ -15,6 +15,7 @@ import { SummitDetailsComponent } from './summit-details/summit-details.componen
 import { SummitSliderComponent } from './summit-slider/summit-slider.component';
 import { DisplayPairComponent } from './shared/display-pair/display-pair.component';
 import { PhotoAlbumComponent } from './photo-album/photo-album.component';
+import { HttpErrorInterceptor } from './interceptors/error-interceptor';
 
 @NgModule({
   declarations: [
@@ -39,6 +40,11 @@ import { PhotoAlbumComponent } from './photo-album/photo-album.component';
     {
       provide: ErrorStateMatcher,
       useClass: ShowOnDirtyErrorStateMatcher
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorInterceptor,
+      multi: true
     }
   ],
   entryComponents: [

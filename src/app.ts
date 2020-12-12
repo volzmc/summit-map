@@ -73,6 +73,16 @@ app.use((req: Request, res: Response, next) => {
     next();
 });
 
+app.use('/api/*', (req: Request, res: Response, next) => {
+    if (!req.user) {
+        console.info("redirecting");
+        res.sendStatus(401);
+    } else {
+        console.info("not redirecting");
+        next();
+    }
+})
+
 app.get("/api/allSummits", async (req: Request, res: Response) => {
     const allSummits = await summitService.getAllSummits();
 

@@ -1,5 +1,6 @@
+/// <reference types="@types/googlemaps" />
+
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { } from 'googlemaps';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 import { ApiService } from '../services/api.service';
@@ -14,7 +15,7 @@ import { forkJoin } from 'rxjs';
 })
 export class MapViewComponent implements OnInit {
 
-  @ViewChild('map', { static: false}) mapElement: any;
+  @ViewChild('map', { static: true}) mapElement: any;
   map: google.maps.Map;
 
   private allSummits: Summit[];

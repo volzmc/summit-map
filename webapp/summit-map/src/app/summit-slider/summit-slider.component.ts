@@ -1,10 +1,11 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { MAT_BOTTOM_SHEET_DATA, MatDialog, MatBottomSheetRef } from '@angular/material';
+import { MatDialog } from '@angular/material/dialog';
 import { Summit } from '../models/summit';
 import { PhotoAlbumComponent } from '../photo-album/photo-album.component';
 import { ApiService } from '../services/api.service';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { MAT_BOTTOM_SHEET_DATA, MatBottomSheetRef } from '@angular/material/bottom-sheet';
 
 @Component({
   selector: 'sm-summit-slider',

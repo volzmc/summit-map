@@ -1,9 +1,15 @@
 <div class="mat-elevation-z6 header-container">
-    <nav class="navbar-header">
-        <a mat-button class="mat-button mat-button-base" href="/auth/google">Login</a>
-        <a mat-button class="mat-button mat-button-base" href="/map">Map</a>
-        <a mat-button class="mat-button mat-button-base" href="/admin">Admin</a>
-    </nav>
+    <mat-toolbar color="primary">
+        <span>GeoFrame</span>
+        <span class="spacer"></span>
+        <button mat-icon-button [matMenuTriggerFor]="menu" class="example-icon">
+            <mat-icon>menu</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="goTo('map')">Map</button>
+            <button mat-menu-item (click)="goTo('admin')">Summit List</button>
+        </mat-menu>
+    </mat-toolbar>
 </div>
 
 <router-outlet></router-outlet>

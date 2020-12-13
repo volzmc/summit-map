@@ -13,6 +13,10 @@
     }
 }
 
+.spacer {
+    flex: 1 1 auto;
+}
+
 .header-container {
     position: absolute;
     z-index: 1000;

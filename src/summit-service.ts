@@ -7,7 +7,7 @@ export class SummitService {
     private redisClient: IHandyRedis;
 
     constructor() {
-        this.redisClient = createHandyClient(process.env.REDIS_URL);
+        this.redisClient = createHandyClient(config.redisUrl);
     }
 
     async getAllSummits(): Promise<Summit[]> {

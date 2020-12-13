@@ -18,7 +18,19 @@ export class MapViewComponent implements OnInit {
   @ViewChild('map', { static: true}) mapElement: any;
   map: google.maps.Map;
 
+  private htmlString = `
+  <div id="centerControl">
+    <button mat-icon-button class="mat-focus-indicator mat-menu-trigger example-icon mat-icon-button mat-button-base">
+        <span class="mat-button-wrapper">
+          <mat-icon class="mat-icon notranslate material-icons mat-icon-no-color">gps_fixed</mat-icon>
+        </span>
+    </button>
+  </div>
+  `
+
   private allSummits: Summit[];
+  private homeCenter = new google.maps.LatLng(47.2732900725505, -121.44201323593751);
+  private defaultZoom = 8;
 
   constructor(
     private apiService: ApiService,
@@ -62,13 +74,26 @@ export class MapViewComponent implements OnInit {
     this.map = new google.maps.Map(
       this.mapElement.nativeElement,
       {
-        center: new google.maps.LatLng(47.2732900725505, -121.44201323593751),
-        zoom: 8,
+        center: this.homeCenter,
+        zoom: this.defaultZoom,
         mapTypeId: google.maps.MapTypeId.SATELLITE,
         mapTypeControl: false,
         fullscreenControl: false,
         streetViewControl: false
       });
+
+    const container = document.createRange().createContextualFragment(this.htmlString).firstElementChild;
+
+    container.addEventListener('click', () => {
+      this.centerMap();
+    });
+
+    this.map.controls[google.maps.ControlPosition.RIGHT_BOTTOM].push(container);
+  }
+
+  centerMap(): void {
+    this.map.setCenter(this.homeCenter);
+    this.map.setZoom(this.defaultZoom);
   }
 
   handleMarkerClicked(marker: google.maps.Marker): void {

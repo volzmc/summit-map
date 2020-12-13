@@ -16,6 +16,7 @@ import { DisplayPairComponent } from './shared/display-pair/display-pair.compone
 import { PhotoAlbumComponent } from './photo-album/photo-album.component';
 import { HttpErrorInterceptor } from './interceptors/error-interceptor';
 import { CustomMatieralsModule } from './custom-materials/custom-materials.module';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 @NgModule({
   declarations: [
@@ -33,7 +34,8 @@ import { CustomMatieralsModule } from './custom-materials/custom-materials.modul
     HttpClientModule,
     BrowserAnimationsModule,
     FormsModule, ReactiveFormsModule,
-    CustomMatieralsModule
+    CustomMatieralsModule,
+    NgbModule
   ],
   providers: [
     ApiService,

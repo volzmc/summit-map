@@ -26,7 +26,6 @@ export class SummitSliderComponent implements OnInit {
   ngOnInit() {
     if (this.data.album) {
       this.isLoading = true;
-      console.log("Loading bottom sheet")
       
       this.coverPhotoUrl = this.apiService.getMediaItem(this.data.album.coverPhotoMediaItemId)
         .pipe(

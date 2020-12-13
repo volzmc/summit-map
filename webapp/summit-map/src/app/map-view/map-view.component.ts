@@ -97,13 +97,10 @@ export class MapViewComponent implements OnInit {
   }
 
   handleMarkerClicked(marker: google.maps.Marker): void {
-    console.info("Handling click");
     const summit = this.allSummits.find(s => s.title === marker.getTitle());
 
-    console.info("Found matching summit" + summit.title);
     this.bottomSheetService.open(SummitSliderComponent, {
-      data: summit,
-      disableClose: true
+      data: summit
     });
   }
 

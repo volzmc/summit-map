@@ -5,6 +5,7 @@ import path from "path";
 import bodyParser from "body-parser";
 import passport from "passport";
 import request from "request-promise";
+import cors from "cors"
 
 import { SummitService } from "./summit-service";
 import { setAuth } from './auth';
@@ -35,17 +36,21 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.use(cors())
+
 setAuth(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
 
+/*
 app.all("/*", (req: Request, res: Response, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT");
     next();
 });
+*/
 
 // Start the OAuth login process for Google.
 app.get('/auth/google', passport.authenticate('google', {

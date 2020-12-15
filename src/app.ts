@@ -36,21 +36,19 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.use(cors())
-
 setAuth(passport);
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-/*
+
 app.all("/*", (req: Request, res: Response, next) => {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT");
     next();
 });
-*/
+
 
 // Start the OAuth login process for Google.
 app.get('/auth/google', passport.authenticate('google', {
@@ -80,18 +78,23 @@ app.use((req: Request, res: Response, next) => {
 
 app.use('/api/*', (req: Request, res: Response, next) => {
     if (!req.user) {
-        console.info("redirecting");
+        console.log("redirecting");
         res.sendStatus(401);
     } else {
-        console.info("not redirecting");
+        console.log("not redirecting");
         next();
     }
 })
 
 app.get("/api/allSummits", async (req: Request, res: Response) => {
-    const allSummits = await summitService.getAllSummits();
+    try {
+        console.log("Calling allSummits");
+        const allSummits = await summitService.getAllSummits();
 
-    res.json(allSummits);
+        res.json(allSummits);
+    } catch (err) {
+        console.log(err);
+    }
 });
 
 app.post("/api/update", async (req: Request, res: Response) => {

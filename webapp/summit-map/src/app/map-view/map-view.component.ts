@@ -2,6 +2,7 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { MatBottomSheet, MatBottomSheetRef } from '@angular/material/bottom-sheet';
+import MarkerClusterer from '@googlemaps/markerclustererplus'
 
 import { ApiService } from '../services/api.service';
 import { Summit } from '../models/summit';
@@ -45,19 +46,27 @@ export class MapViewComponent implements OnInit {
       const albums = tuple[1];
 
       this.allSummits = summits;
-        summits.forEach(sum => {
-          const marker = new google.maps.Marker({
-            position: new google.maps.LatLng(sum.latitude, sum.longitude),
-            map: this.map,
-            title: sum.title,
-            icon: this.getIcon(sum)
-          });
-
-          marker.addListener('click', () => {
-            console.info("Click registered on marker");
-            this.handleMarkerClicked(marker);
-          });
+      const markers = [];
+      summits.forEach(sum => {
+        const marker = new google.maps.Marker({
+          position: new google.maps.LatLng(sum.latitude, sum.longitude),
+          map: this.map,
+          title: sum.title,
+          icon: this.getIcon(sum)
         });
+
+        marker.addListener('click', () => {
+          console.info("Click registered on marker");
+          this.handleMarkerClicked(marker);
+        });
+        markers.push(marker);
+      });
+
+      const bulgerCluster = new MarkerClusterer(this.map, markers, {
+        imagePath: 'https://developers.google.com/maps/documentation/javascript/examples/markerclusterer/m',
+        gridSize: 30,
+        maxZoom: 12
+      });
 
       albums.forEach(album => {
         this.allSummits.forEach(s => {
@@ -104,14 +113,11 @@ export class MapViewComponent implements OnInit {
     });
   }
 
-  private getIcon(summit: Summit): any {
-    return summit.bulgersNumber ?
-      {
-        url: 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png'
-      } :
-      {
-        url: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
-      };
+  private getIcon(summit: Summit): google.maps.Icon {
+    const url = summit.bulgersNumber ? 'http://maps.google.com/mapfiles/ms/icons/blue-dot.png' : 'http://maps.google.com/mapfiles/ms/icons/red-dot.png';
+    return {
+      url: url
+    };
   }
 
 }

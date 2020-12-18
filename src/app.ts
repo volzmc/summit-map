@@ -12,6 +12,7 @@ import { setAuth } from './auth';
 import { config } from './config';
 
 const app = express();
+app.use(cors())
 const port = process.env.PORT || 8080;
 const summitService = new SummitService();
 

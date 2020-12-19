@@ -15,7 +15,7 @@ import { UserService } from "./user_service";
 import { AuthClientFactory } from "./auth";
 
 const app = express();
-app.use(cors())
+//app.use(cors())
 app.use(cookieParser());
 const port = process.env.PORT || 8080;
 

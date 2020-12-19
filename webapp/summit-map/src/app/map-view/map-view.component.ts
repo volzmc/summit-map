@@ -56,9 +56,9 @@ export class MapViewComponent implements OnInit {
         });
 
         marker.addListener('click', (event) => {
+          event.stop();
           console.info("Click registered on marker");
           this.handleMarkerClicked(marker);
-          event.stop();
         });
         markers.push(marker);
       });

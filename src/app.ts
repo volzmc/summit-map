@@ -14,7 +14,7 @@ import { RedisClientFactory } from "./redis_client";
 import { UserService } from "./user_service";
 import { AuthClientFactory } from "./auth";
 
-const allowedOrigins = ['https://geo-frame.com', 'http://localhost:8080'];
+const allowedOrigins = ['https://www.geo-frame.com', 'http://localhost:8080'];
 
 const app = express();
 app.use(cors(
@@ -26,7 +26,7 @@ app.use(cors(
             }
 
             if (allowedOrigins.indexOf(origin) === -1) {
-                return next(new Error('Not an allowed origin'), false);
+                return next(new Error(`Not an allowed origin: ${origin}`), false);
             }
 
             return next(null, true);

@@ -98,7 +98,7 @@ app.get('/login', async (req: Request, res: Response) => {
 });
 
 app.use('/api/*', async (req: Request, res: Response, next) => {
-    const token = req.cookies.summitId;
+    const token = getTokenFromHeader(req);
     console.log(`Cookie token: ${token}`);
     if (token) {
         const verifiedUserId = await verifyIdToken(token);
@@ -192,6 +192,11 @@ async function verifyIdToken(idToken): Promise<string> {
         console.log("token not valid");
         return null;
     }
+}
+
+function getTokenFromHeader(req: Request): string {
+    const authHeader = req.headers.authorization;
+    return authHeader ? authHeader.split(' ')[1] : null;
 }
 
 async function getPhotosFromAlbum(authToken: string, albumId: string) {

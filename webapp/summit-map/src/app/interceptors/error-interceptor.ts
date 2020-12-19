@@ -1,5 +1,6 @@
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CookieService } from 'ngx-cookie-service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment'
@@ -9,13 +10,17 @@ import { AuthService } from '../services/auth.service';
 export class HttpErrorInterceptor implements HttpInterceptor {
 
     constructor(
-        private authService: AuthService
+        private cookieService: CookieService
         ) { }
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         
-        request = request.clone({
-            withCredentials: true
+        const summitCookie = this.cookieService.get('summitId');
+
+        request.clone({
+            setHeaders: {
+                Authorization: `Bearer ${summitCookie}`
+            }
         });
 
         return next.handle(request)

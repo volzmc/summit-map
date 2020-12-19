@@ -16,6 +16,8 @@ export class SummitSliderComponent implements OnInit {
   coverPhotoUrl: Observable<string>;
   isLoading = true;
 
+  private maxDimension = this.getMaxDimension();
+
   constructor(
     @Inject(MAT_BOTTOM_SHEET_DATA) public data: Summit,
     private modalService: MatDialog,
@@ -32,7 +34,7 @@ export class SummitSliderComponent implements OnInit {
           map(mediaItem => {
             const width = mediaItem.mediaMetadata.width;
             const height = mediaItem.mediaMetadata.height;
-            return `${this.data.album.coverPhotoBaseUrl}=w${Math.round(width / 8)}-h${Math.round(height / 8)}`;
+            return `${this.data.album.coverPhotoBaseUrl}=s300`;
           }));
           
     }
@@ -48,6 +50,12 @@ export class SummitSliderComponent implements OnInit {
       backdropClass: 'photo-album-backdrop'
     });
     this.dismissSheet();
+  }
+
+  private getMaxDimension(): number {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    return Math.round(Math.min(screenHeight, screenWidth) * 0.8);
   }
 
 }

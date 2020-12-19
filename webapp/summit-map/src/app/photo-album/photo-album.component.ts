@@ -23,7 +23,8 @@ export class PhotoAlbumComponent implements OnInit {
   ngOnInit() {
     this.apiService.getPhotosFromAlbum(this.data.photoAlbumId)
       .subscribe(items => {
-        this.images = items.filter(i => i.filename.endsWith('.jpg') && i.mediaMetadata.width < 5000);
+        this.images = items.filter(i => (i.filename.endsWith('.jpg') || i.filename.endsWith('.HEIC')));
+        console.log(`Number of images: ${this.images.length}`)
       });
 
     this.innerScreenWidth = window.innerWidth;
@@ -37,7 +38,13 @@ export class PhotoAlbumComponent implements OnInit {
       height = width;
       width = temp;
     }
-    return `${this.images[index].baseUrl}=w${this.getWidth()}-h${this.getHeight(width, height)}`;
+    return `${this.images[index].baseUrl}=s${this.getWidth()}`;
+  }
+
+  private getMaxDimension(): number {
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    return Math.round(Math.min(screenHeight, screenWidth) * 0.8);
   }
 
   private getWidth(): number {

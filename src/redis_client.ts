@@ -6,7 +6,7 @@ export class RedisClientFactory {
 
     getClient(): IHandyRedis {
         if (!this.client) {
-            this.client = createHandyClient(config.redisUrl);
+            this.client = createHandyClient(process.env.REDIS_URL);
         }
         return this.client;
     }

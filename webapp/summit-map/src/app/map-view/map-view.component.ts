@@ -55,9 +55,10 @@ export class MapViewComponent implements OnInit {
           icon: this.getIcon(sum)
         });
 
-        marker.addListener('click', () => {
+        marker.addListener('click', (event) => {
           console.info("Click registered on marker");
           this.handleMarkerClicked(marker);
+          event.stop();
         });
         markers.push(marker);
       });

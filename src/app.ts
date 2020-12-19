@@ -14,8 +14,24 @@ import { RedisClientFactory } from "./redis_client";
 import { UserService } from "./user_service";
 import { AuthClientFactory } from "./auth";
 
+const allowedOrigins = ['https://geo-frame.com', 'http://localhost:8080'];
+
 const app = express();
-//app.use(cors())
+app.use(cors(
+    {
+        credentials: true,
+        origin: (origin, next) => {
+            if (!origin) {
+                return next(null, true);
+            }
+
+            if (allowedOrigins.indexOf(origin) === -1) {
+                return next(new Error('Not an allowed origin'), false);
+            }
+
+            return next(null, true);
+        }
+    }));
 app.use(cookieParser());
 const port = process.env.PORT || 8080;
 
@@ -39,6 +55,7 @@ const allowedExt = [
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+/*
 app.all("/*", (req: Request, res: Response, next) => {
     res.header("Access-Control-Allow-Origin", "https://geo-frame.com");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Content-Length");
@@ -46,6 +63,7 @@ app.all("/*", (req: Request, res: Response, next) => {
     res.header("Access-Control-Allow-Credentials", "true");
     next();
 });
+*/
 
 app.get('/auth/google/callback', async (req: Request, res: Response) => {
     console.log("callback hit");
@@ -182,6 +200,9 @@ async function verifyIdToken(idToken): Promise<string> {
 }
 
 function getTokenFromHeader(req: Request): string {
+    console.log(`Headers: ${req.headers}`);
+    console.log(`Cookie: ${req.cookies.summitId}`);
+    console.log(`Auth header: ${req.headers.authorization}`);
     const authHeader = req.headers.authorization;
     return authHeader ? authHeader.split(' ')[1] : null;
 }

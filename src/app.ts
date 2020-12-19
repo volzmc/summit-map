@@ -211,13 +211,11 @@ function getTokenFromHeader(req: Request): string {
 async function getPhotosFromAlbum(user: SummitUser, albumId: string) {
     let photos = [];
     let error = null;
-    let parameters = {
-        pageSize: 50,
-        pageToken: null
-    };
 
-    const searchTerm = {
-        albumId: albumId
+    const body = {
+        albumId: albumId,
+        pageSize: 50,
+        pageToken: null,
     };
 
     try {
@@ -227,9 +225,8 @@ async function getPhotosFromAlbum(user: SummitUser, albumId: string) {
             const client = authClientFactory.create(user);
             const result: any = (await client.request({
                 url: config.apiEndpoint + '/v1/mediaItems:search',
-                params: parameters,
-                body: searchTerm,
-                method: 'POST'
+                method: 'POST',
+                data: body
             })).data;
 
             if (result && result.mediaItems) {
@@ -238,10 +235,10 @@ async function getPhotosFromAlbum(user: SummitUser, albumId: string) {
 
                 photos = photos.concat(items);
             }
-            parameters.pageToken = result.nextPageToken;
+            body.pageToken = result.nextPageToken;
             // Loop until all albums have been listed and no new nextPageToken is
             // returned.
-        } while (parameters.pageToken != null);
+        } while (body.pageToken != null);
 
     } catch (err) {
         console.log(err);

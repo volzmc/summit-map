@@ -18,9 +18,6 @@ export class UserService {
     }
 
     async setUser(user: SummitUser): Promise<any> {
-        const userExists = await this.redisClient.exists(user.id);
-        if (!userExists) {
-            await this.redisClient.set(user.id, JSON.stringify(user));
-        }
+        await this.redisClient.set(user.id, JSON.stringify(user));
     }
 }

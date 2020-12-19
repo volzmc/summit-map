@@ -12,6 +12,7 @@ import { config } from './config';
 import { SummitUser } from "./summit_user";
 import { RedisClientFactory } from "./redis_client";
 import { UserService } from "./user_service";
+import { AuthClientFactory } from "./auth";
 
 const app = express();
 app.use(cors())
@@ -21,26 +22,7 @@ const port = process.env.PORT || 8080;
 const redisClientFactory = new RedisClientFactory();
 const summitService = new SummitService(redisClientFactory);
 const userService = new UserService(redisClientFactory);
-
-const authClient = new OAuth2Client(
-    config.oAuthClientId,
-    config.oAuthClientSecret,
-    config.oAuthCallbackUrl
-    );
-
-function getAuthenticatedClient(): string {
-    const oauthClient = new OAuth2Client(
-        config.oAuthClientId,
-        config.oAuthClientSecret,
-        config.oAuthCallbackUrl
-    );
-
-    const authURl = oauthClient.generateAuthUrl({
-        access_type: 'offline',
-        scope: config.scopes.join(' ')
-    });
-    return authURl;
-}
+const authClientFactory = new AuthClientFactory();
 
 const allowedExt = [
     ".js",
@@ -71,7 +53,7 @@ app.get('/auth/google/callback', async (req: Request, res: Response) => {
     const code = req.query.code;
     console.log(`Code: ${code}`);
 
-    const resp = await authClient.getToken(code);
+    const resp = await authClientFactory.create().getToken(code);
     const userId = await verifyIdToken(resp.tokens.id_token);
     console.log(`Refresh token: ${resp.tokens.refresh_token}`);
     console.log(`Access token: ${resp.tokens.access_token}`);
@@ -94,22 +76,27 @@ app.get('/auth/google/callback', async (req: Request, res: Response) => {
 });
 
 app.get('/login', async (req: Request, res: Response) => {
-    res.redirect(getAuthenticatedClient());
+    res.redirect(authClientFactory.getAuthUrl());
 });
 
 app.use('/api/*', async (req: Request, res: Response, next) => {
     const token = getTokenFromHeader(req);
     console.log(`Cookie token: ${token}`);
     if (token) {
-        const verifiedUserId = await verifyIdToken(token);
-        console.log(`Verified userId: ${verifiedUserId}`);
-        if (!verifiedUserId) {
+        try {
+            const verifiedUserId = await verifyIdToken(token);
+            console.log(`Verified userId: ${verifiedUserId}`);
+            if (!verifiedUserId) {
+                res.status(401);
+            }
+            const user = await userService.getUser(verifiedUserId);
+            console.log(`Found user in DB: ${user.id}`);
+            req.user = user;
+            next();
+        } catch(err) {
+            console.log(err);
             res.status(401);
         }
-        const user = await userService.getUser(verifiedUserId);
-        console.log(`Found user in DB: ${user.id}`);
-        req.user = user;
-        next();
     } else {
         res.status(401);
     }
@@ -141,7 +128,7 @@ app.post("/api/photos", async (req: Request, res: Response) => {
     const albumId = req.body.albumId;
     console.log("Calling photos");
     console.log(`Token: ${req.user.access_token}`);
-    const data = await getPhotosFromAlbum(req.user.token, albumId);
+    const data = await getPhotosFromAlbum(req.user, albumId);
 
     if (data.error) {
         res.status(data.error.code || 500).send(data.error);
@@ -152,7 +139,7 @@ app.post("/api/photos", async (req: Request, res: Response) => {
 
 app.post("/api/mediaItem", async (req: Request, res: Response) => {
     const mediaItemId = req.body.mediaItemId;
-    const data = await getMediaItem(req.user.access_token, mediaItemId);
+    const data = await getMediaItem(req.user, mediaItemId);
     res.status(200).send(data);
 })
 
@@ -161,7 +148,7 @@ app.get("/api/albums", async (req: Request, res: Response) => {
     console.log(`User: ${JSON.stringify(req.user)}`);
     console.log(`Token: ${req.user.access_token}`);
 
-    const data = await libraryApiGetAlbums(req.user.access_token);
+    const data = await libraryApiGetAlbums(req.user);
 
     if (data.error) {
         res.status(data.error.code || 500).send(data.error);
@@ -182,7 +169,7 @@ app.get("*", (req: Request, res: Response) => {
 async function verifyIdToken(idToken): Promise<string> {
     if (idToken) {
         console.log("verifying id token");
-        const ticket = await authClient.verifyIdToken({
+        const ticket = await authClientFactory.create().verifyIdToken({
             idToken: idToken,
             audience: config.oAuthClientId
         });
@@ -199,7 +186,7 @@ function getTokenFromHeader(req: Request): string {
     return authHeader ? authHeader.split(' ')[1] : null;
 }
 
-async function getPhotosFromAlbum(authToken: string, albumId: string) {
+async function getPhotosFromAlbum(user: SummitUser, albumId: string) {
     let photos = [];
     let error = null;
     let parameters = {
@@ -215,14 +202,13 @@ async function getPhotosFromAlbum(authToken: string, albumId: string) {
         // Loop while there is a nextpageToken property in the response until all
         // albums have been listed.
         do {
-            // Make a GET request to load the albums with optional parameters (the
-            // pageToken if set).
-            const result = await request.post(config.apiEndpoint + '/v1/mediaItems:search', {
-                headers: { 'Content-Type': 'application/json' },
-                qs: parameters,
-                json: searchTerm,
-                auth: { 'bearer': authToken },
-            });
+            const client = authClientFactory.create(user);
+            const result: any = (await client.request({
+                url: config.apiEndpoint + '/v1/mediaItems:search',
+                params: parameters,
+                body: searchTerm,
+                method: 'POST'
+            })).data;
 
             if (result && result.mediaItems) {
                 // Parse albums and add them to the list, skipping empty entries.
@@ -236,29 +222,24 @@ async function getPhotosFromAlbum(authToken: string, albumId: string) {
         } while (parameters.pageToken != null);
 
     } catch (err) {
-        // If the error is a StatusCodeError, it contains an error.error object that
-        // should be returned. It has a name, statuscode and message in the correct
-        // format. Otherwise extract the properties.
-        error = err.error.error ||
-            { name: err.name, code: err.statusCode, message: err.message };
+        console.log(err);
     }
 
     return { photos, error };
 }
 
-async function getMediaItem(authToken: string, mediaItemId: string) {
-    const result = await request.get(config.apiEndpoint + `/v1/mediaItems/${mediaItemId}`, {
-        headers: { 'Content-Type': 'application/json' },
-        json: true,
-        auth: { 'bearer': authToken }
+async function getMediaItem(user: SummitUser, mediaItemId: string) {
+    const client = authClientFactory.create(user);
+    const result = await client.request({
+        url: `${config.apiEndpoint}/v1/mediaItems/${mediaItemId}`,
+        method: 'GET'
     });
-
-    return result;
+    return result.data;
 }
 
 // Returns a list of all albums owner by the logged in user from the Library
 // API.
-async function libraryApiGetAlbums(authToken) {
+async function libraryApiGetAlbums(user: SummitUser) {
     let albums = [];
     let nextPageToken = null;
     let error = null;
@@ -271,14 +252,12 @@ async function libraryApiGetAlbums(authToken) {
         // Loop while there is a nextpageToken property in the response until all
         // albums have been listed.
         do {
-            // Make a GET request to load the albums with optional parameters (the
-            // pageToken if set).
-            const result = await request.get(config.apiEndpoint + '/v1/albums', {
-                headers: { 'Content-Type': 'application/json' },
-                qs: parameters,
-                json: true,
-                auth: { 'bearer': authToken },
-            });
+            const client = authClientFactory.create(user);
+            const result: any = (await client.request({
+                url: config.apiEndpoint + '/v1/albums',
+                method: 'GET',
+                params: parameters
+            })).data;
 
             if (result && result.albums) {
                 // Parse albums and add them to the list, skipping empty entries.
@@ -292,11 +271,7 @@ async function libraryApiGetAlbums(authToken) {
         } while (parameters.pageToken != null);
 
     } catch (err) {
-        // If the error is a StatusCodeError, it contains an error.error object that
-        // should be returned. It has a name, statuscode and message in the correct
-        // format. Otherwise extract the properties.
-        error = err.error.error ||
-            { name: err.name, code: err.statusCode, message: err.message };
+        console.log(err);
     }
 
     return { albums, error };

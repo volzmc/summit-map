@@ -23,13 +23,15 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         request = request.clone({
             setHeaders: {
                 Authorization: `Bearer ${summitCookie}`
-            }
+            },
+            withCredentials: true
         });
 
         return next.handle(request)
             .pipe(
                 catchError((error: HttpErrorResponse) => {
                     if (error.status === 403 || error.status === 401) {
+                        this.cookieService.delete('summitId');
                         window.location.href = `${environment.base}/login`
                     }
                     let errorMsg = error.message;

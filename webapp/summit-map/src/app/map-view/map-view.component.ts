@@ -110,7 +110,8 @@ export class MapViewComponent implements OnInit {
     const summit = this.allSummits.find(s => s.title === marker.getTitle());
 
     this.bottomSheetService.open(SummitSliderComponent, {
-      data: summit
+      data: summit,
+      disableClose: true
     });
   }
 

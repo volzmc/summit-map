@@ -6,7 +6,8 @@
       "moduleResolution": "node",
       "sourceMap": true,
       "outDir": "dist",
-      "experimentalDecorators": true
+      "experimentalDecorators": true,
+      "skipLibCheck": true
     },
     "lib": ["es2015"],
     "exclude": [

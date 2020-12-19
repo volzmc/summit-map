@@ -1,13 +1,15 @@
-import { createHandyClient, IHandyRedis } from "handy-redis";
+import { IHandyRedis } from "handy-redis";
 
 import { Summit } from './models';
-import { config } from "./config";
+import { RedisClientFactory } from "./redis_client";
 
 export class SummitService {
     private redisClient: IHandyRedis;
 
-    constructor() {
-        this.redisClient = createHandyClient(process.env.REDIS_URL);
+    constructor(
+        clientFactory: RedisClientFactory
+    ) {
+        this.redisClient = clientFactory.getClient();
     }
 
     async getAllSummits(): Promise<Summit[]> {

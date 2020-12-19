@@ -105,7 +105,7 @@ app.use('/api/*', async (req: Request, res: Response, next) => {
             const verifiedUserId = await verifyIdToken(token);
             console.log(`Verified userId: ${verifiedUserId}`);
             if (!verifiedUserId) {
-                res.status(401);
+                res.status(401).send();
             }
             const user = await userService.getUser(verifiedUserId);
             console.log(`Found user in DB: ${user.id}`);
@@ -113,10 +113,11 @@ app.use('/api/*', async (req: Request, res: Response, next) => {
             next();
         } catch(err) {
             console.log(err);
-            res.status(401);
+            console.log('Sending back a 401 after token verification failed');
+            res.status(401).send();
         }
     } else {
-        res.status(401);
+        res.status(401).send();
     }
 });
 

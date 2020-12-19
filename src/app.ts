@@ -58,7 +58,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.all("/*", (req: Request, res: Response, next) => {
-    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Origin", "https://geo-frame.com");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type");
     res.header("Access-Control-Allow-Methods", "GET, POST, PUT");
     res.header("Access-Control-Allow-Credentials", "true");

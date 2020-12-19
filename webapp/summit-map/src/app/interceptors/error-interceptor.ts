@@ -20,7 +20,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
         console.log('Found summitCookie: ' + summitCookie);
         console.log(this.cookieService.getAll());
 
-        request.clone({
+        request = request.clone({
             setHeaders: {
                 Authorization: `Bearer ${summitCookie}`
             }

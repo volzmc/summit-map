@@ -2,13 +2,22 @@
     <mat-toolbar color="primary">
         <span>GeoFrame</span>
         <span class="spacer"></span>
+        <span class="login-button" *ngIf="!user" (click)="goTo('login')">Login</span>
+        <div class="user-container" *ngIf="user" [matMenuTriggerFor]="userMenu">
+            <span class="user-name">{{user.name}}</span>
+            <img class="user-photo" [src]="user.picture">
+        </div>
         <button mat-icon-button [matMenuTriggerFor]="menu" class="example-icon">
             <mat-icon>menu</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
-            <button mat-menu-item (click)="goTo('login')">Login</button>
             <button mat-menu-item (click)="goTo('map')">Map</button>
             <button mat-menu-item (click)="goTo('admin')">Summit List</button>
+            <button mat-menu-item (click)="goTo('weather')">Weather</button>
+        </mat-menu>
+
+        <mat-menu #userMenu="matMenu">
+            <button mat-menu-item (click)="signOut()">Sign Out</button>
         </mat-menu>
     </mat-toolbar>
 </div>

@@ -22,3 +22,26 @@
     z-index: 1000;
     width: 100%;
 }
+
+.login-button {
+    &:hover {
+        cursor: pointer;
+    }
+}
+
+.user-container {
+    margin-right: 16px;
+    
+    .user-photo {
+        border-radius: 50%;
+        height: 40px;
+    }
+    
+    .user-name {
+        margin-right: 16px;
+    }
+
+    &:hover {
+        cursor: pointer;
+    }
+}

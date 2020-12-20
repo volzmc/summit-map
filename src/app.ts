@@ -2,9 +2,7 @@ import express, { RequestHandler } from "express";
 import { Request, Response } from "express-serve-static-core";
 import path from "path";
 import bodyParser from "body-parser";
-import request from "request-promise";
 import cors from "cors";
-import { OAuth2Client } from "google-auth-library";
 import cookieParser from "cookie-parser";
 
 import { SummitService } from "./summit-service";
@@ -54,16 +52,6 @@ const allowedExt = [
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
-
-/*
-app.all("/*", (req: Request, res: Response, next) => {
-    res.header("Access-Control-Allow-Origin", "https://geo-frame.com");
-    res.header("Access-Control-Allow-Headers", "X-Requested-With, Content-Type, Content-Length");
-    res.header("Access-Control-Allow-Methods", "GET, POST, PUT, OPTIONS");
-    res.header("Access-Control-Allow-Credentials", "true");
-    next();
-});
-*/
 
 app.get('/auth/google/callback', async (req: Request, res: Response) => {
     console.log("callback hit");

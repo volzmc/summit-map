@@ -3,8 +3,7 @@ import { Injectable } from '@angular/core';
 import { CookieService } from 'ngx-cookie-service';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { environment } from '../../environments/environment'
-import { AuthService } from '../services/auth.service';
+import { environment } from '../../environments/environment';
 
 @Injectable()
 export class HttpErrorInterceptor implements HttpInterceptor {
@@ -16,9 +15,6 @@ export class HttpErrorInterceptor implements HttpInterceptor {
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
         
         const summitCookie = this.cookieService.get('summitId');
-
-        console.log('Found summitCookie: ' + summitCookie);
-        console.log(this.cookieService.getAll());
 
         request = request.clone({
             setHeaders: {

@@ -18,6 +18,8 @@ import { DisplayPairComponent } from './shared/display-pair/display-pair.compone
 import { PhotoAlbumComponent } from './photo-album/photo-album.component';
 import { HttpErrorInterceptor } from './interceptors/error-interceptor';
 import { CustomMatieralsModule } from './custom-materials/custom-materials.module';
+import { UserService } from './services/user.service';
+import { WindyComponent } from './windy/windy.component';
 
 
 @NgModule({
@@ -28,7 +30,8 @@ import { CustomMatieralsModule } from './custom-materials/custom-materials.modul
     SummitDetailsComponent,
     SummitSliderComponent,
     DisplayPairComponent,
-    PhotoAlbumComponent
+    PhotoAlbumComponent,
+    WindyComponent
   ],
   imports: [
     BrowserModule,
@@ -50,7 +53,8 @@ import { CustomMatieralsModule } from './custom-materials/custom-materials.modul
       useClass: HttpErrorInterceptor,
       multi: true
     },
-    CookieService
+    CookieService,
+    UserService
   ],
   entryComponents: [
     SummitDetailsComponent,

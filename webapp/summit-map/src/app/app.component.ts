@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import { User } from './models/user';
+import { UserService } from './services/user.service';
 
 
 @Component({
@@ -9,11 +11,18 @@ import { Router } from '@angular/router';
 })
 export class AppComponent {
 
+  user: User = this.userService.getUser();
+
   constructor(
-    private router: Router
+    private router: Router,
+    private userService: UserService
   ) { }
   
   goTo(route: string) {
     this.router.navigateByUrl(route)
+  }
+
+  signOut() {
+    this.userService.signOut();
   }
 }

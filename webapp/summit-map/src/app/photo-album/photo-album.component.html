@@ -1,7 +1,12 @@
-<ngb-carousel *ngIf="images">
-  <ng-template *ngFor="let image of images; let i = index" ngbSlide>
-    <div class="picsum-img-wrapper">
-      <img [src]="getImageSource(i)">
-    </div>
-  </ng-template>
-</ngb-carousel>
+<div class="carouselContainer">
+  <ngb-carousel *ngIf="images">
+    <ng-template *ngFor="let image of images; let i = index" ngbSlide>
+      <div class="picsum-img-wrapper">
+        <img [src]="getImageSource(i)">
+      </div>
+    </ng-template>
+  </ngb-carousel>
+  <div *ngIf="isLoading">
+    <mat-spinner></mat-spinner>
+  </div>
+</div>

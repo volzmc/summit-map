@@ -14,6 +14,7 @@ export class PhotoAlbumComponent implements OnInit {
   images: MediaItem[];
 
   private innerScreenWidth: number;
+  isLoading = true;
 
   constructor(
     private apiService: ApiService,
@@ -23,6 +24,7 @@ export class PhotoAlbumComponent implements OnInit {
   ngOnInit() {
     this.apiService.getPhotosFromAlbum(this.data.photoAlbumId)
       .subscribe(items => {
+        this.isLoading = false;
         this.images = items.filter(i => (i.filename.endsWith('.jpg') || i.filename.endsWith('.HEIC')));
         console.log(`Number of images: ${this.images.length}`)
       });
@@ -31,29 +33,11 @@ export class PhotoAlbumComponent implements OnInit {
   }
 
   getImageSource(index: number): string {
-    let height = this.images[index].mediaMetadata.height;
-    let width = this.images[index].mediaMetadata.width;
-    if (height > width) {
-      const temp = height;
-      height = width;
-      width = temp;
-    }
     return `${this.images[index].baseUrl}=s${this.getWidth()}`;
-  }
-
-  private getMaxDimension(): number {
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    return Math.round(Math.min(screenHeight, screenWidth) * 0.8);
   }
 
   private getWidth(): number {
     return Math.round(this.innerScreenWidth * 0.8);
-  }
-
-  private getHeight(imageWidth: number, imageHeight): number {
-    const widthRatio = this.getWidth() / imageWidth;
-    return Math.round(imageHeight * widthRatio);
   }
 
 }

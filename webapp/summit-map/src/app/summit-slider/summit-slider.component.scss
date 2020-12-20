@@ -2,8 +2,11 @@
     display: flex;
     align-items: center;
 
-    .photo-container:hover {
-        cursor: pointer;
+    .photo-container {
+        &:hover {
+            cursor: pointer;
+        }
+        min-width: 300px;
     }
 
     .info {
@@ -25,4 +28,5 @@
 .spinner {
     margin-left: auto;
     margin-right: auto;
+    padding-left: 100px;
 }
